@@ -1,0 +1,86 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: cm-db
+  namespace: django-ns
+data:
+  file.sql: |
+    GRANT ALL ON django.* TO 'django'@'%';
+    FLUSH PRIVILEGES;
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-pvc
+  namespace: django-ns
+  labels:
+    app: db
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: django-ns
+  labels:
+    app: db
+  name: db
+spec:
+  selector:
+    matchLabels:
+      app: db
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+      - image: mysql
+        name: db
+        ports:
+          - containerPort: 3306
+        args: ['--default-authentication-plugin=mysql_native_password', '--init-file=/data/file.sql']
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: django
+          - name: MYSQL_DATABASE
+            value: django
+          - name: MYSQL_USER
+            value: django
+          - name: MYSQL_PASSWORD
+            value: django
+        volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: data-fs
+          - mountPath: /data
+            name: sql-file
+      volumes:
+        - name: data-fs
+          persistentVolumeClaim:
+            claimName: data-pvc
+        - name: sql-file
+          configMap:
+            name: cm-db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-srv
+  namespace: django-ns
+spec:
+  selector:
+    app: db
+  ports:
+   - port: 3306
+     targetPort: 3306
+     protocol: TCP

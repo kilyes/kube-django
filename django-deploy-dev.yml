@@ -1,0 +1,67 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media-pvc
+  namespace: django-ns
+  labels:
+    app: media
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: django-ns
+  labels:
+    app: myapp
+  name: myapp
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - image: iafak/django-app:v1
+        name: myapp
+        ports:
+          - containerPort: 8000
+        env:
+          - name: SECRET_KEY
+            value: mysuperkey
+          - name: ALLOWED_HOSTS
+            value: 127.0.0.1,localhost
+        volumeMounts:
+          - mountPath: /vol/web
+            name: media-fs
+      volumes:
+        - name: media-fs
+          persistentVolumeClaim:
+            claimName: media-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: django-app-srv
+  namespace: django-ns
+spec:
+  selector:
+    app: myapp
+  ports:
+   - port: 8000
+     targetPort: 8000
+     protocol: TCP
