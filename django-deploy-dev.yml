@@ -44,7 +44,7 @@ spec:
           - name: SECRET_KEY
             value: mysuperkey
           - name: ALLOWED_HOSTS
-            value: 127.0.0.1,localhost
+            value: 127.0.0.1,localhost,*
         volumeMounts:
           - mountPath: /vol/web
             name: media-fs
