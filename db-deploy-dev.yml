@@ -8,7 +8,7 @@ spec:
   persistentVolumeReclaimPolicy: Delete /* For development Purposes only */
   storageClassName: manual
   capacity:
-    storage: 500mi
+    storage: 1Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
