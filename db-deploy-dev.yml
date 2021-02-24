@@ -5,6 +5,8 @@ metadata:
   namespace: django-ns
 data:
   file.sql: |
+    CREATE DATABASE django;
+    CREATE USER 'django'@'%' IDENTIFY BY 'django';
     GRANT ALL ON django.* TO 'django'@'%';
     FLUSH PRIVILEGES;
 ---
@@ -75,7 +77,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: db-srv
+  name: db
   namespace: django-ns
 spec:
   selector:
