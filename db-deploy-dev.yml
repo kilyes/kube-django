@@ -6,7 +6,7 @@ metadata:
 data:
   file.sql: |
     CREATE DATABASE django;
-    CREATE USER 'django'@'%' IDENTIFY BY 'django';
+    CREATE USER 'django'@'%' IDENTIFIED WITH mysql_native_password BY 'django';
     GRANT ALL ON django.* TO 'django'@'%';
     FLUSH PRIVILEGES;
 ---
