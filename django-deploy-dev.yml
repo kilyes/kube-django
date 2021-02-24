@@ -7,11 +7,12 @@ metadata:
   labels:
     app: media
 spec:
+  storageClassName: manual
   accessModes:
-  - ReadWriteOnce
+  - ReadWriteMany
   resources:
     requests:
-      storage: 500Mi
+      storage: 200Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -35,6 +36,10 @@ spec:
       labels:
         app: myapp
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
       - image: iafak/django-app:v1
         name: myapp
