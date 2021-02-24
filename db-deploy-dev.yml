@@ -23,7 +23,6 @@ metadata:
   labels:
     app: db
 spec:
-  persistentVolumeReclaimPolicy: Delete /* For development Purposes only */
   storageClassName: manual
   accessModes:
   - ReadWriteOnce
