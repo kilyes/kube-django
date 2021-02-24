@@ -15,7 +15,6 @@ metadata:
   labels:
     app: db
 spec:
-  storageClassName: manual
   accessModes:
   - ReadWriteOnce
   resources:
