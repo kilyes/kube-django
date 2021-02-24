@@ -55,14 +55,14 @@ spec:
           - containerPort: 3306
         args: ['--default-authentication-plugin=mysql_native_password', '--init-file=/data/file.sql']
         env:
-          - name: MYSQL_ROOT_PASSWORD
-            value: django
-          - name: MYSQL_DATABASE
-            value: django
-          - name: MYSQL_USER
-            value: django
-          - name: MYSQL_PASSWORD
-            value: django
+        - name: "MYSQL_ROOT_PASSWORD"
+          value: "django"
+        - name: "MYSQL_USER"
+          value: "django"
+        - name: "MYSQL_PASSWORD"
+          value: "django"
+        - name: "MYSQL_DATABASE"
+          value: "django"
         volumeMounts:
           - mountPath: /var/lib/mysql
             name: data-fs
