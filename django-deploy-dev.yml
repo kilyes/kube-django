@@ -43,7 +43,7 @@ spec:
       initContainers:
       - name: test connection to database
         image: arey/mysql-client
-        args: ['/bin/sh', '-c', 'while `mysql -utest -ptest -e "select 1"`!=0 do sleep 3; done']
+        args: ['/bin/sh', '-c', 'while true; do  mysql -utest -ptestd -e "select 1"; if [[ $? == 0 ]]; then exit 0; else  sleep 2; fi;done']
       containers:
       - image: iafak/django-app:v1
         name: myapp
