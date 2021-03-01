@@ -40,6 +40,10 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+      initContainers:
+      - name: test connection to database
+        image: arey/mysql-client
+        args: ['/bin/sh', '-c', 'while `mysql -utest -ptest -e "select 1"`!=0 do sleep 3; done']
       containers:
       - image: iafak/django-app:v1
         name: myapp
