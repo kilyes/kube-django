@@ -5,6 +5,8 @@ metadata:
   namespace: django-ns
 data:
   file.sql: |
+    CREATE USER 'test'@'%' IDENTIFIED BY 'test';
+    GRANT SELECT ON django.* TO 'test'@'%';
     FLUSH PRIVILEGES;
 ---
 apiVersion: v1
